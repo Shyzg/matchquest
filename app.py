@@ -748,12 +748,10 @@ class MatchQuest:
                                         f"{Fore.BLUE + Style.BRIGHT}[ Farming Can Be Claim At {datetime.fromtimestamp(reward_point['data']['next_claim_timestamp'] / 1000).astimezone().strftime('%x %X %Z')} ]{Style.RESET_ALL}"
                                     )
 
-                sleep(3)
                 self.print_timestamp(f"{Fore.WHITE + Style.BRIGHT}[ Home/Game ]{Style.RESET_ALL}")
                 for (token, fn, uid) in accounts:
                     self.rule_game(token=token, first_name=fn)
 
-                sleep(3)
                 self.print_timestamp(f"{Fore.WHITE + Style.BRIGHT}[ Tasks ]{Style.RESET_ALL}")
                 for (token, fn, uid) in accounts:
                     self.list_task_point(token=token, first_name=fn, uid=uid)
