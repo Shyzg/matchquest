@@ -98,7 +98,7 @@ class MatchQuest:
                 first_name = user_data.get('first_name', '')
                 last_name = user_data.get('last_name', '')
                 username = user_data.get('username', '')
-                nickname = f"shy{random.randint(1000, 9999)}"
+                nickname = f"{self.faker.user_name()}{random.randint(1000, 9999)}"
                 data = json.dumps({'uid':int(uid),'first_name':first_name,'last_name':last_name,'username':username,'nickname':nickname,'invitor':'799088ca289a5695366dedcce0c35bf3','tg_login_params':query})
                 headers = {
                     **self.headers,
