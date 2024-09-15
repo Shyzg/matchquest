@@ -582,11 +582,12 @@ class MatchQuest:
             claim_reward_point = response.json()
             if 'code' in claim_reward_point:
                 if claim_reward_point['code'] == 200:
-                    return self.print_timestamp(
+                    self.print_timestamp(
                         f"{Fore.CYAN + Style.BRIGHT}[ {first_name} ]{Style.RESET_ALL}"
                         f"{Fore.WHITE + Style.BRIGHT} | {Style.RESET_ALL}"
                         f"{Fore.GREEN + Style.BRIGHT}[ You Have Got {int(claim_reward_point['data'] / 1000)} ]{Style.RESET_ALL}"
                     )
+                    return self.farming_reward_point(token=token, first_name=first_name, uid=uid)
                 elif claim_reward_point['code'] == 400:
                     if 'err' in claim_reward_point:
                         if claim_reward_point['err'] == 'Farming event not finished':
