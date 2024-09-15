@@ -145,7 +145,7 @@ class MatchQuest:
         return accounts
 
     def profile_user(self, token: str, first_name: str, uid: int):
-        url = 'https://tgapp-api.matchain.io/api/tgapp/v1/daily/quiz/progress'
+        url = 'https://tgapp-api.matchain.io/api/tgapp/v1/user/profile'
         data = json.dumps({'uid':uid})
         headers = {
             **self.headers,
@@ -154,21 +154,21 @@ class MatchQuest:
             'Content-Type': 'application/json'
         }
         try:
-            response = self.session.get(url=url, headers=headers)
+            response = self.session.post(url=url, headers=headers, data=data)
             response.raise_for_status()
             return response.json()
         except RequestException as e:
             self.print_timestamp(
                 f"{Fore.CYAN + Style.BRIGHT}[ {first_name} ]{Style.RESET_ALL}"
                 f"{Fore.WHITE + Style.BRIGHT} | {Style.RESET_ALL}"
-                f"{Fore.RED + Style.BRIGHT}[ An HTTP Error Occurred While Fetching Progress Quiz Daily: {str(e.response.reason)} ]{Style.RESET_ALL}"
+                f"{Fore.RED + Style.BRIGHT}[ An HTTP Error Occurred While Fetching Profile User: {str(e)} ]{Style.RESET_ALL}"
             )
             return None
         except Exception as e:
             self.print_timestamp(
                 f"{Fore.CYAN + Style.BRIGHT}[ {first_name} ]{Style.RESET_ALL}"
                 f"{Fore.WHITE + Style.BRIGHT} | {Style.RESET_ALL}"
-                f"{Fore.RED + Style.BRIGHT}[ An Unexpected Error Occurred While Fetching Progress Quiz Daily: {str(e)} ]{Style.RESET_ALL}"
+                f"{Fore.RED + Style.BRIGHT}[ An Unexpected Error Occurred While Fetching Profile User: {str(e)} ]{Style.RESET_ALL}"
             )
             return None
 
@@ -205,7 +205,7 @@ class MatchQuest:
             return self.print_timestamp(
                 f"{Fore.CYAN + Style.BRIGHT}[ {first_name} ]{Style.RESET_ALL}"
                 f"{Fore.WHITE + Style.BRIGHT} | {Style.RESET_ALL}"
-                f"{Fore.RED + Style.BRIGHT}[ An HTTP Error Occurred While Fetching Progress Quiz Daily: {str(e.response.reason)} ]{Style.RESET_ALL}"
+                f"{Fore.RED + Style.BRIGHT}[ An HTTP Error Occurred While Fetching Progress Quiz Daily: {str(e)} ]{Style.RESET_ALL}"
             )
         except Exception as e:
             return self.print_timestamp(
@@ -245,7 +245,7 @@ class MatchQuest:
             return self.print_timestamp(
                 f"{Fore.CYAN + Style.BRIGHT}[ {first_name} ]{Style.RESET_ALL}"
                 f"{Fore.WHITE + Style.BRIGHT} | {Style.RESET_ALL}"
-                f"{Fore.RED + Style.BRIGHT}[ An HTTP Error Occurred While Submit Quiz Daily: {str(e.response.reason)} ]{Style.RESET_ALL}"
+                f"{Fore.RED + Style.BRIGHT}[ An HTTP Error Occurred While Submit Quiz Daily: {str(e)} ]{Style.RESET_ALL}"
             )
         except Exception as e:
             return self.print_timestamp(
@@ -272,7 +272,7 @@ class MatchQuest:
             return self.print_timestamp(
                 f"{Fore.CYAN + Style.BRIGHT}[ {first_name} ]{Style.RESET_ALL}"
                 f"{Fore.WHITE + Style.BRIGHT} | {Style.RESET_ALL}"
-                f"{Fore.RED + Style.BRIGHT}[ An HTTP Error Occurred While Fetching Status Task Daily: {str(e.response.reason)} ]{Style.RESET_ALL}"
+                f"{Fore.RED + Style.BRIGHT}[ An HTTP Error Occurred While Fetching Status Task Daily: {str(e)} ]{Style.RESET_ALL}"
             )
         except Exception as e:
             return self.print_timestamp(
@@ -334,7 +334,7 @@ class MatchQuest:
             return self.print_timestamp(
                 f"{Fore.CYAN + Style.BRIGHT}[ {first_name} ]{Style.RESET_ALL}"
                 f"{Fore.WHITE + Style.BRIGHT} | {Style.RESET_ALL}"
-                f"{Fore.RED + Style.BRIGHT}[ An HTTP Error Occurred While Purchase Task Daily: {str(e.response.reason)} ]{Style.RESET_ALL}"
+                f"{Fore.RED + Style.BRIGHT}[ An HTTP Error Occurred While Purchase Task Daily: {str(e)} ]{Style.RESET_ALL}"
             )
         except Exception as e:
             return self.print_timestamp(
@@ -368,7 +368,7 @@ class MatchQuest:
             return self.print_timestamp(
                 f"{Fore.CYAN + Style.BRIGHT}[ {first_name} ]{Style.RESET_ALL}"
                 f"{Fore.WHITE + Style.BRIGHT} | {Style.RESET_ALL}"
-                f"{Fore.RED + Style.BRIGHT}[ An HTTP Error Occurred While Fetching Rule Game: {str(e.response.reason)} ]{Style.RESET_ALL}"
+                f"{Fore.RED + Style.BRIGHT}[ An HTTP Error Occurred While Fetching Rule Game: {str(e)} ]{Style.RESET_ALL}"
             )
         except Exception as e:
             return self.print_timestamp(
@@ -398,7 +398,7 @@ class MatchQuest:
             return self.print_timestamp(
                 f"{Fore.CYAN + Style.BRIGHT}[ {first_name} ]{Style.RESET_ALL}"
                 f"{Fore.WHITE + Style.BRIGHT} | {Style.RESET_ALL}"
-                f"{Fore.RED + Style.BRIGHT}[ An HTTP Error Occurred While Fetching Rule Game: {str(e.response.reason)} ]{Style.RESET_ALL}"
+                f"{Fore.RED + Style.BRIGHT}[ An HTTP Error Occurred While Fetching Rule Game: {str(e)} ]{Style.RESET_ALL}"
             )
         except Exception as e:
             return self.print_timestamp(
@@ -436,7 +436,7 @@ class MatchQuest:
             return self.print_timestamp(
                 f"{Fore.CYAN + Style.BRIGHT}[ {first_name} ]{Style.RESET_ALL}"
                 f"{Fore.WHITE + Style.BRIGHT} | {Style.RESET_ALL}"
-                f"{Fore.RED + Style.BRIGHT}[ An HTTP Error Occurred While Play Game: {str(e.response.reason)} ]{Style.RESET_ALL}"
+                f"{Fore.RED + Style.BRIGHT}[ An HTTP Error Occurred While Play Game: {str(e)} ]{Style.RESET_ALL}"
             )
         except Exception as e:
             return self.print_timestamp(
@@ -489,7 +489,7 @@ class MatchQuest:
             return self.print_timestamp(
                 f"{Fore.CYAN + Style.BRIGHT}[ {first_name} ]{Style.RESET_ALL}"
                 f"{Fore.WHITE + Style.BRIGHT} | {Style.RESET_ALL}"
-                f"{Fore.RED + Style.BRIGHT}[ An HTTP Error Occurred While Claim Game: {str(e.response.reason)} ]{Style.RESET_ALL}"
+                f"{Fore.RED + Style.BRIGHT}[ An HTTP Error Occurred While Claim Game: {str(e)} ]{Style.RESET_ALL}"
             )
         except Exception as e:
             return self.print_timestamp(
@@ -515,7 +515,7 @@ class MatchQuest:
             self.print_timestamp(
                 f"{Fore.CYAN + Style.BRIGHT}[ {first_name} ]{Style.RESET_ALL}"
                 f"{Fore.WHITE + Style.BRIGHT} | {Style.RESET_ALL}"
-                f"{Fore.RED + Style.BRIGHT}[ An HTTP Error Occurred While Fetching Reward Point: {str(e.response.reason)} ]{Style.RESET_ALL}"
+                f"{Fore.RED + Style.BRIGHT}[ An HTTP Error Occurred While Fetching Reward Point: {str(e)} ]{Style.RESET_ALL}"
             )
             return None
         except Exception as e:
@@ -558,7 +558,7 @@ class MatchQuest:
             return self.print_timestamp(
                 f"{Fore.CYAN + Style.BRIGHT}[ {first_name} ]{Style.RESET_ALL}"
                 f"{Fore.WHITE + Style.BRIGHT} | {Style.RESET_ALL}"
-                f"{Fore.RED + Style.BRIGHT}[ An HTTP Error Occurred While Farming Reward Point: {str(e.response.reason)} ]{Style.RESET_ALL}"
+                f"{Fore.RED + Style.BRIGHT}[ An HTTP Error Occurred While Farming Reward Point: {str(e)} ]{Style.RESET_ALL}"
             )
         except Exception as e:
             return self.print_timestamp(
@@ -599,7 +599,7 @@ class MatchQuest:
             return self.print_timestamp(
                 f"{Fore.CYAN + Style.BRIGHT}[ {first_name} ]{Style.RESET_ALL}"
                 f"{Fore.WHITE + Style.BRIGHT} | {Style.RESET_ALL}"
-                f"{Fore.RED + Style.BRIGHT}[ An HTTP Error Occurred While Claim Reward Point: {str(e.response.reason)} ]{Style.RESET_ALL}"
+                f"{Fore.RED + Style.BRIGHT}[ An HTTP Error Occurred While Claim Reward Point: {str(e)} ]{Style.RESET_ALL}"
             )
         except Exception as e:
             return self.print_timestamp(
@@ -635,7 +635,7 @@ class MatchQuest:
             return self.print_timestamp(
                 f"{Fore.CYAN + Style.BRIGHT}[ {first_name} ]{Style.RESET_ALL}"
                 f"{Fore.WHITE + Style.BRIGHT} | {Style.RESET_ALL}"
-                f"{Fore.RED + Style.BRIGHT}[ An HTTP Error Occurred While Fetching List Task Point: {str(e.response.reason)} ]{Style.RESET_ALL}"
+                f"{Fore.RED + Style.BRIGHT}[ An HTTP Error Occurred While Fetching List Task Point: {str(e)} ]{Style.RESET_ALL}"
             )
         except Exception as e:
             return self.print_timestamp(
@@ -666,7 +666,7 @@ class MatchQuest:
             return self.print_timestamp(
                 f"{Fore.CYAN + Style.BRIGHT}[ {first_name} ]{Style.RESET_ALL}"
                 f"{Fore.WHITE + Style.BRIGHT} | {Style.RESET_ALL}"
-                f"{Fore.RED + Style.BRIGHT}[ An HTTP Error Occurred While Complete Task Point: {str(e.response.reason)} ]{Style.RESET_ALL}"
+                f"{Fore.RED + Style.BRIGHT}[ An HTTP Error Occurred While Complete Task Point: {str(e)} ]{Style.RESET_ALL}"
             )
         except Exception as e:
             return self.print_timestamp(
@@ -707,7 +707,7 @@ class MatchQuest:
             return self.print_timestamp(
                 f"{Fore.CYAN + Style.BRIGHT}[ {first_name} ]{Style.RESET_ALL}"
                 f"{Fore.WHITE + Style.BRIGHT} | {Style.RESET_ALL}"
-                f"{Fore.RED + Style.BRIGHT}[ An HTTP Error Occurred While Claim Task Point: {str(e.response.reason)} ]{Style.RESET_ALL}"
+                f"{Fore.RED + Style.BRIGHT}[ An HTTP Error Occurred While Claim Task Point: {str(e)} ]{Style.RESET_ALL}"
             )
         except Exception as e:
             return self.print_timestamp(
