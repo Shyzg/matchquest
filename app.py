@@ -132,9 +132,7 @@ class MatchQuest:
                 response.raise_for_status()
                 login_user = response.json()
                 token = login_user['data']['token']
-                fn = login_user['data']['user']['first_name']
-                uid = login_user['data']['user']['uid']
-                accounts.append((token, fn, uid))
+                accounts.append((token, first_name, uid))
             except (Exception, JSONDecodeError, RequestException) as e:
                 self.print_timestamp(
                     f"{Fore.YELLOW + Style.BRIGHT}[ Failed To Process {query} ]{Style.RESET_ALL}"
@@ -585,7 +583,7 @@ class MatchQuest:
                     self.print_timestamp(
                         f"{Fore.CYAN + Style.BRIGHT}[ {first_name} ]{Style.RESET_ALL}"
                         f"{Fore.WHITE + Style.BRIGHT} | {Style.RESET_ALL}"
-                        f"{Fore.GREEN + Style.BRIGHT}[ You Have Got {int(claim_reward_point['data'] / 1000)} ]{Style.RESET_ALL}"
+                        f"{Fore.GREEN + Style.BRIGHT}[ You Have Got {int(claim_reward_point['data'] / 1000)} From Farming ]{Style.RESET_ALL}"
                     )
                     return self.farming_reward_point(token=token, first_name=first_name, uid=uid)
                 elif claim_reward_point['code'] == 400:
@@ -717,6 +715,45 @@ class MatchQuest:
                 f"{Fore.RED + Style.BRIGHT}[ An Unexpected Error Occurred While Claim Task Point: {str(e)} ]{Style.RESET_ALL}"
             )
 
+    def claim_invite_point(self, token: str, first_name: str, uid: int):
+        url = 'https://tgapp-api.matchain.io/api/tgapp/v1/point/invite/claim'
+        data = json.dumps({'uid':uid})
+        headers = {
+            **self.headers,
+            'Authorization': token,
+            'Content-Length': str(len(data)),
+            'Content-Type': 'application/json'
+        }
+        try:
+            response = self.session.post(url=url, headers=headers, data=data)
+            response.raise_for_status()
+            claim_invite_point = response.json()
+            if 'code' in claim_invite_point:
+                if claim_invite_point['code'] == 200:
+                    if claim_invite_point['data'] != 0:
+                        return self.print_timestamp(
+                            f"{Fore.CYAN + Style.BRIGHT}[ {first_name} ]{Style.RESET_ALL}"
+                            f"{Fore.WHITE + Style.BRIGHT} | {Style.RESET_ALL}"
+                            f"{Fore.GREEN + Style.BRIGHT}[ You Have Got {int(claim_invite_point['data'] / 1000)} From Referral ]{Style.RESET_ALL}"
+                        )
+                    return self.print_timestamp(
+                        f"{Fore.CYAN + Style.BRIGHT}[ {first_name} ]{Style.RESET_ALL}"
+                        f"{Fore.WHITE + Style.BRIGHT} | {Style.RESET_ALL}"
+                        f"{Fore.RED + Style.BRIGHT}[ Your Referral Point {claim_invite_point['data']} ]{Style.RESET_ALL}"
+                    )
+        except RequestException as e:
+            return self.print_timestamp(
+                f"{Fore.CYAN + Style.BRIGHT}[ {first_name} ]{Style.RESET_ALL}"
+                f"{Fore.WHITE + Style.BRIGHT} | {Style.RESET_ALL}"
+                f"{Fore.RED + Style.BRIGHT}[ An HTTP Error Occurred While Claim Invite Point: {str(e)} ]{Style.RESET_ALL}"
+            )
+        except Exception as e:
+            return self.print_timestamp(
+                f"{Fore.CYAN + Style.BRIGHT}[ {first_name} ]{Style.RESET_ALL}"
+                f"{Fore.WHITE + Style.BRIGHT} | {Style.RESET_ALL}"
+                f"{Fore.RED + Style.BRIGHT}[ An Unexpected Error Occurred While Claim Invite Point: {str(e)} ]{Style.RESET_ALL}"
+            )
+
     def main(self, queries):
         while True:
             try:
@@ -726,23 +763,30 @@ class MatchQuest:
                 total_balance = 0
 
                 self.print_timestamp(f"{Fore.WHITE + Style.BRIGHT}[ Home ]{Style.RESET_ALL}")
-                for (token, fn, uid) in accounts:
-                    self.point_balance(token=token, first_name=fn, uid=uid)
-                    self.progress_quiz_daily(token=token, first_name=fn)
-                    self.status_task_daily(token=token, first_name=fn, uid=uid)
-                    reward_point = self.reward_point(token=token, first_name=fn, uid=uid)
+                for (token, first_name, uid) in accounts:
+                    self.point_balance(token=token, first_name=first_name, uid=uid)
+                    self.progress_quiz_daily(token=token, first_name=first_name)
+                    self.status_task_daily(token=token, first_name=first_name, uid=uid)
+                    self.claim_invite_point(token=token, first_name=first_name, uid=uid)
+                
+                accounts = self.login_user(queries=queries)
+                self.print_timestamp(f"{Fore.WHITE + Style.BRIGHT}[ Home/Farming ]{Style.RESET_ALL}")
+                for (token, first_name, uid) in accounts:
+                    reward_point = self.reward_point(token=token, first_name=first_name, uid=uid)
                     if reward_point is None: continue
                     if 'code' in reward_point:
                         if reward_point['code'] == 200:
                             if reward_point['data']['next_claim_timestamp'] == 0:
-                                self.farming_reward_point(token=token, first_name=fn, uid=uid)
+                                self.farming_reward_point(token=token, first_name=first_name, uid=uid)
                             else:
                                 if datetime.now().astimezone() >= datetime.fromtimestamp(reward_point['data']['next_claim_timestamp'] / 1000).astimezone():
-                                    self.claim_reward_point(token=token, first_name=fn, uid=uid)
+                                    accounts = self.login_user(queries=queries)
+                                    for (token, first_name, uid) in accounts:
+                                        self.claim_reward_point(token=token, first_name=first_name, uid=uid)
                                 else:
                                     restart_times.append(datetime.fromtimestamp(int(reward_point['data']['next_claim_timestamp'] / 1000)).astimezone().timestamp())
                                     self.print_timestamp(
-                                        f"{Fore.CYAN + Style.BRIGHT}[ {fn} ]{Style.RESET_ALL}"
+                                        f"{Fore.CYAN + Style.BRIGHT}[ {first_name} ]{Style.RESET_ALL}"
                                         f"{Fore.WHITE + Style.BRIGHT} | {Style.RESET_ALL}"
                                         f"{Fore.YELLOW + Style.BRIGHT}[ Reward {int(reward_point['data']['reward'] / 1000)} ]{Style.RESET_ALL}"
                                         f"{Fore.WHITE + Style.BRIGHT} | {Style.RESET_ALL}"
@@ -750,13 +794,13 @@ class MatchQuest:
                                     )
 
                 self.print_timestamp(f"{Fore.WHITE + Style.BRIGHT}[ Home/Game ]{Style.RESET_ALL}")
-                for (token, fn, uid) in accounts:
-                    self.rule_game(token=token, first_name=fn)
+                for (token, first_name, uid) in accounts:
+                    self.rule_game(token=token, first_name=first_name)
 
                 self.print_timestamp(f"{Fore.WHITE + Style.BRIGHT}[ Tasks ]{Style.RESET_ALL}")
-                for (token, fn, uid) in accounts:
-                    self.list_task_point(token=token, first_name=fn, uid=uid)
-                    profile_user = self.profile_user(token=token, first_name=fn, uid=uid)
+                for (token, first_name, uid) in accounts:
+                    self.list_task_point(token=token, first_name=first_name, uid=uid)
+                    profile_user = self.profile_user(token=token, first_name=first_name, uid=uid)
                     total_balance += int(profile_user['data']['Balance'] / 1000) if profile_user else 0
 
                 if restart_times:
@@ -775,8 +819,7 @@ class MatchQuest:
                     f"{Fore.GREEN + Style.BRIGHT}[ Total Balance {total_balance} ]{Style.RESET_ALL}"
                 )
 
-                sleep_timestamp = (datetime.now().astimezone() + timedelta(seconds=sleep_time)).strftime('%x %X %Z')
-                self.print_timestamp(f"{Fore.CYAN + Style.BRIGHT}[ Restarting At {sleep_timestamp} ]{Style.RESET_ALL}")
+                self.print_timestamp(f"{Fore.CYAN + Style.BRIGHT}[ Restarting At {(datetime.now().astimezone() + timedelta(seconds=sleep_time)).strftime('%x %X %Z')} ]{Style.RESET_ALL}")
 
                 sleep(sleep_time)
                 self.clear_terminal()
