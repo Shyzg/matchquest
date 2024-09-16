@@ -766,7 +766,6 @@ class MatchQuest:
                 for (token, first_name, uid) in accounts:
                     self.point_balance(token=token, first_name=first_name, uid=uid)
                     self.progress_quiz_daily(token=token, first_name=first_name)
-                    self.status_task_daily(token=token, first_name=first_name, uid=uid)
                     self.claim_invite_point(token=token, first_name=first_name, uid=uid)
                 
                 accounts = self.login_user(queries=queries)
@@ -792,6 +791,7 @@ class MatchQuest:
                                         f"{Fore.WHITE + Style.BRIGHT} | {Style.RESET_ALL}"
                                         f"{Fore.BLUE + Style.BRIGHT}[ Farming Can Be Claim At {datetime.fromtimestamp(reward_point['data']['next_claim_timestamp'] / 1000).astimezone().strftime('%x %X %Z')} ]{Style.RESET_ALL}"
                                     )
+                    self.status_task_daily(token=token, first_name=first_name, uid=uid)
 
                 self.print_timestamp(f"{Fore.WHITE + Style.BRIGHT}[ Home/Game ]{Style.RESET_ALL}")
                 for (token, first_name, uid) in accounts:
